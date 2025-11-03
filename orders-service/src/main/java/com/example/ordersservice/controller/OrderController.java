@@ -2,6 +2,7 @@ package com.example.ordersservice.controller;
 
 import com.example.ordersservice.dtos.OrderCreateDTO;
 import com.example.ordersservice.dtos.OrderDTO;
+import com.example.ordersservice.dtos.OrderWithUserDTO;
 import com.example.ordersservice.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,14 +11,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-public class OrdersController {
+public class OrderController {
     /*@GetMapping("/hello")
     public String hello() {
         return "Hello from orders service!";
     }*/
     private final OrderService orderService;
 
-    public OrdersController(OrderService orderService) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
@@ -45,5 +46,12 @@ public class OrdersController {
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/with-user")
+    public ResponseEntity<OrderWithUserDTO> getOrderWithUser(@PathVariable Long id) {
+        return orderService.getOrderWithUser(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
